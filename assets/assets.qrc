@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>enemy_bug.png</file>
+        <file>player_creature.png</file>
+    </qresource>
+</RCC>
