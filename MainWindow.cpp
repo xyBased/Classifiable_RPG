@@ -1,22 +1,19 @@
 #include "MainWindow.h"
-
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent) {
-
     QWidget* central = new QWidget(this);
     setCentralWidget(central);
 
-    m_sceneView = new BattleSceneView;
+    m_sceneView    = new BattleSceneView;
     m_commandPanel = new CommandPanel;
-    m_infoPanel = new InfoCodePanel;
-
+    m_infoPanel    = new InfoCodePanel;
     m_infoPanel->setMinimumWidth(520);
 
-    m_level = new GameLevel(this);
+    m_level      = new GameLevel(this);
     m_controller = new GameController(this);
 
     QVBoxLayout* leftLayout = new QVBoxLayout;
@@ -26,7 +23,6 @@ MainWindow::MainWindow(QWidget* parent)
     QHBoxLayout* mainLayout = new QHBoxLayout(central);
     mainLayout->setContentsMargins(10, 10, 10, 10);
     mainLayout->setSpacing(12);
-
     mainLayout->addLayout(leftLayout, 3);
     mainLayout->addWidget(m_infoPanel, 2);
 
@@ -37,10 +33,9 @@ MainWindow::MainWindow(QWidget* parent)
         m_commandPanel
         );
 
-    m_controller->startLevel1();
+    // 改这里切换关卡：1 ~ 6
+    m_controller->startLevel(1);
 
     resize(1280, 720);
-
     setWindowTitle("有伦有类的 RPG - 策略解谜版");
 }
-

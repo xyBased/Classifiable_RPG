@@ -113,3 +113,11 @@ QString Creature::classCodeHtml() const {
 
     return html;
 }
+// 文件末尾追加
+void Creature::addMethod(const CodeMethod& m) {
+    m_methods.push_back(m);
+}
+
+void Creature::clearMethods() {
+    m_methods.clear();
+}
