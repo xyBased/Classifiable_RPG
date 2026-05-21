@@ -59,6 +59,9 @@ void GameController::onCommandSubmitted(const QString& command) {
 
     if (result.success && result.consumeStep) {
         m_level->consumeStep();
+        if (!m_level->isWin() && !m_level->isLose()) {
+            enemyTurn();
+        }
     }
 
     if (m_level->isWin()) {
@@ -73,4 +76,23 @@ void GameController::refreshSelectedInfo() {
 
     Creature* creature = m_level->creature(m_selectedActorId);
     m_infoPanel->showCreature(creature);
+}
+void GameController::enemyTurn() {
+    if (!m_level) return;
+
+    Creature* enemy = m_level->creature("enemy");
+    Creature* player = m_level->creature("player");
+
+    if (!enemy || !player) return;
+    if (!enemy->isAlive()) return;  // 敌人死了就不行动
+    if (!player->isAlive()) return; // 玩家死了就结束
+
+    int damage = enemy->atk();
+    player->takeDamage(damage);
+
+    m_commandPanel->appendLog(
+        QString("enemy.attack(player); 造成 %1 点伤害。").arg(damage)
+        );
+
+    // 这里不消耗步数，步数只统计玩家操作
 }

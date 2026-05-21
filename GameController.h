@@ -14,7 +14,7 @@ class GameController : public QObject {
 private:
     GameLevel* m_level = nullptr;
     CommandParser* m_parser = nullptr;
-
+    void enemyTurn();
     BattleSceneView* m_sceneView = nullptr;
     InfoCodePanel* m_infoPanel = nullptr;
     CommandPanel* m_commandPanel = nullptr;
