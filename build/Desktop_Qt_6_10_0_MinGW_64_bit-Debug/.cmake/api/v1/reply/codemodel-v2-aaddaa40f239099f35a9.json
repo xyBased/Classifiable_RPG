@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-fc7ddeef8c3f63e28dd1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "RPGByAI",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "RPGByAI::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-RPGByAI-Debug-add3ae8f11d362fd7199.json",
+					"name" : "RPGByAI",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "RPGByAI_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-RPGByAI_autogen-Debug-82a3d733dfddbf92df46.json",
+					"name" : "RPGByAI_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "RPGByAI_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-RPGByAI_autogen_timestamp_deps-Debug-71d6005d03671b47588f.json",
+					"name" : "RPGByAI_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug",
+		"source" : "D:/RPG"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

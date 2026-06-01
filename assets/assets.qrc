@@ -1,6 +1,13 @@
 <RCC>
     <qresource prefix="/assets">
-        <file>enemy_bug.png</file>
-        <file>player_creature.png</file>
+        <file alias="background_spire.png">background_spire.png</file>
+        <file alias="player_hero.png">player_hero.png</file>
+        <file alias="enemy_bug.png">enemy_bug.png</file>
+        <file alias="enemy_goblin.png">enemy_goblin.png</file>
+        <file alias="enemy_boss.png">enemy_boss.png</file>
+        <file alias="sfx_attack.wav">sfx_attack.wav</file>
+        <file alias="sfx_hit.wav">sfx_hit.wav</file>
+        <file alias="sfx_heal.wav">sfx_heal.wav</file>
+        <file alias="sfx_victory.wav">sfx_victory.wav</file>
     </qresource>
 </RCC>

@@ -1,152 +1,54 @@
 #include "BattleSceneView.h"
+
 #include "SpriteUtil.h"
-#include <QPainter>
+
 #include <QBrush>
-#include <QColor>
-#include <QGraphicsTextItem>
-#include <QDebug>
-#include <QGraphicsRectItem>
+#include <QFrame>
+#include <QGraphicsPathItem>
+#include <QGraphicsPixmapItem>
 #include <QGraphicsSimpleTextItem>
-#include <QFont>
+#include <QLinearGradient>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPen>
+#include <QtGlobal>
 #include <algorithm>
+
+static QGraphicsPathItem* addRoundedRectItem(
+    QGraphicsScene* scene,
+    const QRectF& rect,
+    qreal rx,
+    qreal ry,
+    const QPen& pen,
+    const QBrush& brush
+) {
+    QPainterPath path;
+    path.addRoundedRect(rect, rx, ry);
+    return scene->addPath(path, pen, brush);
+}
 
 BattleSceneView::BattleSceneView(QWidget* parent)
     : QGraphicsView(parent) {
     m_scene = new QGraphicsScene(this);
     setScene(m_scene);
-    setSceneRect(0, 0, 620, 400);
-    setMinimumSize(620, 400);
-    setRenderHints(
-        QPainter::Antialiasing |
-        QPainter::SmoothPixmapTransform |
-        QPainter::TextAntialiasing
-        );
+    setSceneRect(0, 0, 860, 500);
+    setMinimumSize(860, 500);
+    setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setBackgroundBrush(QBrush(QColor(30, 30, 42)));
     setFrameShape(QFrame::NoFrame);
+    setBackgroundBrush(QBrush(QColor(235, 241, 255)));
 }
 
 void BattleSceneView::setLevel(GameLevel* level) {
+    if (m_level) {
+        disconnect(m_level, &GameLevel::levelChanged, this, &BattleSceneView::refresh);
+    }
     m_level = level;
     if (m_level) {
-        connect(m_level, &GameLevel::levelChanged,
-                this, &BattleSceneView::refresh);
+        connect(m_level, &GameLevel::levelChanged, this, &BattleSceneView::refresh);
     }
     refresh();
-}
-
-void BattleSceneView::refresh() {
-    m_scene->clear();
-    m_actorItems.clear();
-    m_scene->setBackgroundBrush(QBrush(QColor(35, 35, 45)));
-    if (!m_level) return;
-
-    // ===== 1. 画玩家 =====
-    Creature* player = m_level->creature("player");
-    if (player) {
-        QPixmap playerPixmap = SpriteUtil::loadSprite(
-            ":/assets/player_creature.png", 180, 8);
-        if (playerPixmap.isNull()) {
-            playerPixmap = QPixmap(140, 180);
-            playerPixmap.fill(Qt::transparent);
-            QPainter painter(&playerPixmap);
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setBrush(QColor(80, 120, 255));
-            painter.setPen(Qt::NoPen);
-            painter.drawEllipse(20, 20, 100, 140);
-            painter.end();
-        }
-
-        QPointF playerFootPos(180, 360);
-        ActorItem* playerItem = new ActorItem("player", playerPixmap);
-        playerItem->setPos(playerFootPos);
-        if (!player->isAlive()) playerItem->setOpacity(0.35);
-        m_scene->addItem(playerItem);
-        m_actorItems.insert("player", playerItem);
-        addHpBar(player, playerFootPos);
-
-        connect(playerItem, &ActorItem::clicked, this,
-                [this](const QString& actorId) {
-                    m_selectedActorId = actorId;
-                    updateSelection();
-                    emit actorSelected(actorId);
-                });
-    }
-
-    // ===== 2. 收集所有敌人（按 id 排序，保证 enemy1 在左、enemy2 在右） =====
-    QList<Creature*> enemies;
-    for (Creature* c : m_level->creatures()) {
-        if (c && c->isEnemy()) enemies.append(c);
-    }
-    std::sort(enemies.begin(), enemies.end(),
-              [](Creature* a, Creature* b) { return a->id() < b->id(); });
-
-    // ===== 3. 按敌人数量分布站位 =====
-    const int n = enemies.size();
-    QList<QPointF> enemyPositions;
-    if (n == 1) {
-        enemyPositions.append(QPointF(470, 360));
-    } else if (n == 2) {
-        enemyPositions.append(QPointF(380, 360));
-        enemyPositions.append(QPointF(540, 360));
-    } else if (n >= 3) {
-        // 3 个及以上：在 x=340~580 之间平均分布
-        const int startX = 340;
-        const int endX   = 580;
-        for (int i = 0; i < n; ++i) {
-            int x = (n == 1) ? (startX + endX) / 2
-                             : startX + (endX - startX) * i / (n - 1);
-            enemyPositions.append(QPointF(x, 360));
-        }
-    }
-
-    // ===== 4. 画敌人 =====
-    for (int i = 0; i < n; ++i) {
-        Creature* enemy = enemies[i];
-        const QPointF& footPos = enemyPositions[i];
-
-        QPixmap enemyPixmap = SpriteUtil::loadSprite(
-            ":/assets/enemy_bug.png", 100, 8);
-        if (enemyPixmap.isNull()) {
-            enemyPixmap = QPixmap(180, 120);
-            enemyPixmap.fill(Qt::transparent);
-            QPainter painter(&enemyPixmap);
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setBrush(QColor(180, 60, 70));
-            painter.setPen(Qt::NoPen);
-            painter.drawEllipse(20, 20, 140, 80);
-            painter.end();
-        }
-
-        ActorItem* enemyItem = new ActorItem(enemy->id(), enemyPixmap);
-        enemyItem->setPos(footPos);
-        if (!enemy->isAlive()) enemyItem->setOpacity(0.35);
-        m_scene->addItem(enemyItem);
-        m_actorItems.insert(enemy->id(), enemyItem);
-        addHpBar(enemy, footPos);
-
-        connect(enemyItem, &ActorItem::clicked, this,
-                [this](const QString& actorId) {
-                    m_selectedActorId = actorId;
-                    updateSelection();
-                    emit actorSelected(actorId);
-                });
-    }
-
-    // ===== 5. 画 Steps 文本 =====
-    QString stepText = QString("Steps: %1 / %2")
-                           .arg(m_level->usedSteps())
-                           .arg(m_level->maxSteps());
-    QGraphicsTextItem* text = m_scene->addText(stepText);
-    text->setDefaultTextColor(Qt::white);
-    text->setPos(35, 35);
-    QFont font = text->font();
-    font.setPointSize(11);
-    font.setBold(true);
-    text->setFont(font);
-
-    updateSelection();
 }
 
 void BattleSceneView::setSelectedActor(const QString& actorId) {
@@ -154,66 +56,227 @@ void BattleSceneView::setSelectedActor(const QString& actorId) {
     updateSelection();
 }
 
-void BattleSceneView::updateSelection() {
-    for (auto it = m_actorItems.begin(); it != m_actorItems.end(); ++it) {
-        ActorItem* item = it.value();
-        if (item) {
-            item->setSelected(it.key() == m_selectedActorId);
-            item->update();
+void BattleSceneView::playAttack(const QString&, const QString&) {}
+void BattleSceneView::playHit(const QString&) {}
+void BattleSceneView::playHeal(const QString&) {}
+
+void BattleSceneView::refresh() {
+    m_scene->clear();
+    m_actorItems.clear();
+    m_actorPositions.clear();
+
+    addBackground();
+    if (!m_level) return;
+    addHud();
+
+    Creature* player = m_level->creature("player");
+    if (player) {
+        int targetHeight = 245;
+        QPixmap playerPixmap = spriteFor(player, targetHeight);
+        QPointF footPos(200, 425);
+
+        ActorItem* item = new ActorItem("player", playerPixmap);
+        item->setPos(footPos);
+        item->setZValue(20);
+        if (!player->isAlive()) item->setOpacity(0.35);
+        m_scene->addItem(item);
+        m_actorItems.insert("player", item);
+        m_actorPositions.insert("player", footPos);
+        addHpBar(player, footPos, 220);
+
+        connect(item, &ActorItem::clicked, this, [this](const QString& actorId) {
+            m_selectedActorId = actorId;
+            updateSelection();
+            emit actorSelected(actorId);
+        });
+    }
+
+    QList<Creature*> enemies;
+    for (Creature* c : m_level->creatures()) {
+        if (c && c->isEnemy()) enemies.append(c);
+    }
+    std::sort(enemies.begin(), enemies.end(), [](Creature* a, Creature* b) {
+        return a->id() < b->id();
+    });
+
+    const int n = enemies.size();
+    QList<QPointF> positions;
+    if (n == 1) {
+        positions << QPointF(660, 425);
+    } else {
+        const int startX = (n >= 4) ? 510 : 560;
+        const int endX = 790;
+        for (int i = 0; i < n; ++i) {
+            int x = startX + (endX - startX) * i / qMax(1, n - 1);
+            positions << QPointF(x, (i % 2 == 0) ? 425 : 405);
         }
     }
+
+    for (int i = 0; i < enemies.size(); ++i) {
+        Creature* enemy = enemies[i];
+        int targetHeight = 180;
+        QPixmap pixmap = spriteFor(enemy, targetHeight);
+        QPointF footPos = positions.value(i, QPointF(660, 425));
+
+        ActorItem* item = new ActorItem(enemy->id(), pixmap);
+        item->setPos(footPos);
+        item->setZValue(20 + i);
+        if (!enemy->isAlive()) item->setOpacity(0.25);
+        m_scene->addItem(item);
+
+        m_actorItems.insert(enemy->id(), item);
+        m_actorPositions.insert(enemy->id(), footPos);
+
+        addIntent(enemy, footPos, pixmap.height());
+        addHpBar(enemy, footPos, qBound(110, pixmap.width(), 180));
+
+        connect(item, &ActorItem::clicked, this, [this](const QString& actorId) {
+            m_selectedActorId = actorId;
+            updateSelection();
+            emit actorSelected(actorId);
+        });
+    }
+
+    updateSelection();
 }
 
-void BattleSceneView::addHpBar(Creature* creature, const QPointF& footPos) {
-    if (!creature) return;
-    const qreal barWidth  = creature->isEnemy() ? 100 : 120;
-    const qreal barHeight = 18;
-    const qreal x = footPos.x() - barWidth / 2.0;
-    const qreal y = footPos.y() + 8;
-
-    double ratio = 0.0;
-    if (creature->maxHp() > 0) {
-        ratio = static_cast<double>(creature->hp()) / creature->maxHp();
+void BattleSceneView::addBackground() {
+    QPixmap bg(":/assets/background_spire.png");
+    if (!bg.isNull()) {
+        QPixmap scaled = bg.scaled(sceneRect().size().toSize(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        auto* pix = m_scene->addPixmap(scaled);
+        pix->setPos((sceneRect().width() - scaled.width()) / 2.0, (sceneRect().height() - scaled.height()) / 2.0);
+        pix->setZValue(-100);
     }
-    if (ratio < 0.0) ratio = 0.0;
-    if (ratio > 1.0) ratio = 1.0;
 
-    QColor hpColor(110, 219, 116);
-    if (ratio <= 0.3)      hpColor = QColor(255, 107, 107);
-    else if (ratio <= 0.6) hpColor = QColor(255, 211, 110);
+    QLinearGradient topShade(0, 0, 0, sceneRect().height());
+    topShade.setColorAt(0, QColor(255, 255, 255, 0));
+    topShade.setColorAt(1, QColor(255, 255, 255, 30));
+    auto* shade = m_scene->addRect(sceneRect(), Qt::NoPen, QBrush(topShade));
+    shade->setZValue(-90);
+}
 
-    QGraphicsRectItem* bg = m_scene->addRect(
-        x, y, barWidth, barHeight,
-        QPen(QColor(143, 162, 214), 1.2),
-        QBrush(QColor(29, 33, 48)));
-    bg->setZValue(20);
+void BattleSceneView::addHud() {
+    QString text = QString("关卡 %1 / %2    步数 %3 / %4")
+        .arg(m_level->currentLevel())
+        .arg(GameLevel::TotalLevels)
+        .arg(m_level->usedSteps())
+        .arg(m_level->maxSteps());
 
-    QGraphicsRectItem* fill = m_scene->addRect(
-        x + 2, y + 2,
-        (barWidth - 4) * ratio, barHeight - 4,
+    auto* bg = addRoundedRectItem(
+        m_scene,
+        QRectF(560, 20, 270, 48),
+        16, 16,
+        QPen(QColor(125, 146, 200, 210), 2),
+        QBrush(QColor(255, 255, 255, 215))
+    );
+    bg->setZValue(80);
+
+    auto* label = m_scene->addText(text);
+    label->setDefaultTextColor(QColor(35, 45, 78));
+    label->setScale(1.05);
+    label->setPos(580, 28);
+    label->setZValue(81);
+}
+
+void BattleSceneView::addHpBar(Creature* creature, const QPointF& footPos, int width) {
+    const int barWidth = width;
+    const int barHeight = 18;
+    const int x = static_cast<int>(footPos.x() - barWidth / 2);
+    const int y = static_cast<int>(footPos.y() + 12);
+    const double ratio = creature->maxHp() > 0 ? double(creature->hp()) / creature->maxHp() : 0.0;
+
+    auto* back = addRoundedRectItem(
+        m_scene,
+        QRectF(x, y, barWidth, barHeight),
+        7, 7,
+        QPen(QColor(46, 53, 74), 1),
+        QBrush(QColor(246, 248, 255, 230))
+    );
+    back->setZValue(40);
+
+    QColor color = ratio <= 0.3 ? QColor(255, 107, 107) : (ratio <= 0.6 ? QColor(255, 205, 94) : QColor(105, 223, 124));
+    auto* front = addRoundedRectItem(
+        m_scene,
+        QRectF(x + 1, y + 1, qMax(0, int((barWidth - 2) * ratio)), barHeight - 2),
+        6, 6,
         Qt::NoPen,
-        QBrush(hpColor));
-    fill->setZValue(21);
+        QBrush(color)
+    );
+    front->setZValue(41);
 
-    QString hpText = QString("%1 / %2").arg(creature->hp()).arg(creature->maxHp());
-    QGraphicsSimpleTextItem* hpLabel = m_scene->addSimpleText(hpText);
-    QFont hpFont("Microsoft YaHei UI", 9, QFont::Bold);
-    hpLabel->setFont(hpFont);
-    hpLabel->setBrush(QBrush(Qt::white));
-    hpLabel->setZValue(22);
-    QRectF hpRect = hpLabel->boundingRect();
-    hpLabel->setPos(
-        x + (barWidth - hpRect.width()) / 2.0,
-        y + (barHeight - hpRect.height()) / 2.0 - 1);
+    auto* hpText = m_scene->addText(QString("%1 / %2").arg(creature->hp()).arg(creature->maxHp()));
+    hpText->setDefaultTextColor(QColor(25, 30, 55));
+    hpText->setScale(0.72);
+    hpText->setPos(footPos.x() - 26, y - 2);
+    hpText->setZValue(42);
+}
 
-    QString nameText = creature->id();
-    QGraphicsSimpleTextItem* nameLabel = m_scene->addSimpleText(nameText);
-    QFont nameFont("Microsoft YaHei UI", 9, QFont::Normal);
-    nameLabel->setFont(nameFont);
-    nameLabel->setBrush(QBrush(QColor(230, 235, 245)));
-    nameLabel->setZValue(22);
-    QRectF nameRect = nameLabel->boundingRect();
-    nameLabel->setPos(
-        x + (barWidth - nameRect.width()) / 2.0,
-        y + barHeight + 4);
+void BattleSceneView::addIntent(Creature* creature, const QPointF& footPos, int spriteHeight) {
+    if (!creature || !creature->isEnemy() || !creature->isAlive() || creature->intent() == Creature::IntentNone) return;
+
+    const QString label = creature->intent() == Creature::IntentAttack
+        ? QString("%1 %2").arg(creature->intentSymbol()).arg(creature->intentValue())
+        : creature->intentSymbol();
+
+    const int w = creature->intent() == Creature::IntentAttack ? 78 : 52;
+    const QPointF p(footPos.x() - w / 2.0, footPos.y() - spriteHeight - 52);
+
+    auto* bubble = addRoundedRectItem(
+        m_scene,
+        QRectF(p.x(), p.y(), w, 42),
+        14, 14,
+        QPen(QColor(109, 123, 171, 180), 2),
+        QBrush(QColor(255, 255, 255, 228))
+    );
+    bubble->setZValue(70);
+
+    auto* text = m_scene->addText(label);
+    QColor color = QColor(255, 170, 60);
+    if (creature->intent() == Creature::IntentHeal) color = QColor(67, 175, 99);
+    if (creature->intent() == Creature::IntentBuff) color = QColor(60, 125, 235);
+    if (creature->intent() == Creature::IntentDefend) color = QColor(90, 90, 140);
+    text->setDefaultTextColor(color);
+    text->setScale(1.15);
+    text->setPos(p.x() + 10, p.y() + 4);
+    text->setZValue(71);
+
+    auto* tip = m_scene->addText(creature->intentText());
+    tip->setDefaultTextColor(QColor(32, 41, 69, 200));
+    tip->setScale(0.68);
+    tip->setPos(p.x() - 2, p.y() + 41);
+    tip->setZValue(71);
+}
+
+QPixmap BattleSceneView::spriteFor(Creature* creature, int& targetHeight) const {
+    if (!creature) return QPixmap();
+
+    QString path = ":/assets/enemy_bug.png";
+    targetHeight = creature->isEnemy() ? 180 : 245;
+
+    if (!creature->isEnemy()) {
+        path = ":/assets/player_hero.png";
+        targetHeight = 250;
+    } else {
+        const QString key = (creature->id() + " " + creature->name() + " " + creature->className()).toLower();
+        if (key.contains("boss") || key.contains("king") || key.contains("door")) {
+            path = ":/assets/enemy_boss.png";
+            targetHeight = 235;
+        } else if (key.contains("goblin") || key.contains("mimic")) {
+            path = ":/assets/enemy_goblin.png";
+            targetHeight = 190;
+        } else {
+            path = ":/assets/enemy_bug.png";
+            targetHeight = 170;
+        }
+    }
+
+    return SpriteUtil::loadSprite(path, targetHeight, 12);
+}
+
+void BattleSceneView::updateSelection() {
+    for (auto it = m_actorItems.begin(); it != m_actorItems.end(); ++it) {
+        it.value()->setSelected(it.key() == m_selectedActorId);
+        it.value()->update();
+    }
 }

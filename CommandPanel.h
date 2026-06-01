@@ -1,15 +1,13 @@
 #pragma once
 
-#include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTextEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QWidget>
+#include <QString>
 
 class CommandPanel : public QWidget {
     Q_OBJECT
-
 private:
     QLineEdit* m_input = nullptr;
     QPushButton* m_runButton = nullptr;
@@ -20,6 +18,7 @@ public:
 
     void setCommand(const QString& command);
     void appendLog(const QString& text);
+    void clearLog();
 
 signals:
     void commandSubmitted(const QString& command);

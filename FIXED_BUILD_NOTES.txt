@@ -1,0 +1,1 @@
+Fixes in this final package:\n1. Replaced invalid QGraphicsScene::addRoundedRect() calls with QPainterPath + QGraphicsScene::addPath().\n2. Removed the optional Qt Multimedia dependency; sound now uses QApplication::beep() so only Qt Widgets is required.\n3. Repacked all replacement files and assets.\n

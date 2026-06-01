@@ -4,7 +4,8 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneHoverEvent>
-#include <QString>
+#include <QStyleOptionGraphicsItem>
+#include <QPointF>
 
 class ActorItem : public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
@@ -18,16 +19,15 @@ public:
 
     QString actorId() const;
 
+    void playAttackToward(const QPointF& targetPos);
+    void playHit();
+    void playHeal();
+
 signals:
     void clicked(const QString& actorId);
 
 protected:
-    void paint(
-        QPainter* painter,
-        const QStyleOptionGraphicsItem* option,
-        QWidget* widget
-        ) override;
-
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event) override;

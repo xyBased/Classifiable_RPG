@@ -1,28 +1,44 @@
 #include "Player.h"
 
+static QString esc(const QString& s) { return s.toHtmlEscaped(); }
+static QString linkPlayer(const QString& command, const QString& text) {
+    return QString("<a href=\"cmd:%1\">%2</a>").arg(esc(command), esc(text));
+}
+
 Player::Player(QObject* parent)
-    : Creature("player", "Hero", "Player", 12, 3, false, parent) {
-    setCampText("Player");
+    : Creature("player", "Player", "Player", 12, 3, false, parent) {
     addMethod({ "void attack(Creature& enemy);", "player.attack(enemy);" });
     addMethod({ "void powerAttack(Creature& enemy);", "player.powerAttack(enemy);" });
     addMethod({ "void heal();", "player.heal();" });
 }
 
 QString Player::classCodeHtml() const {
-    if (hasCustomClassCodeHtml()) {
-        return Creature::classCodeHtml();
-    }
-
     QString html;
-    html += "<pre style='font-family:Consolas, \"Courier New\", monospace;"
-            "font-size:14px; line-height:1.35; color:#EAF1FF; margin:0;"
-            "white-space: pre-wrap; overflow-wrap:anywhere; word-break:break-word;'>";
+    html += "<pre>";
     html += "class Player : public Creature {\n";
     html += "public:\n";
-    html += "    <a href=\"cmd:player.attack(enemy);\" style=\"color:#89DDFF; text-decoration:underline; font-weight:700;\">void attack(Creature&amp; enemy);</a>\n";
-    html += "    <a href=\"cmd:player.powerAttack(enemy);\" style=\"color:#89DDFF; text-decoration:underline; font-weight:700;\">void powerAttack(Creature&amp; enemy);</a>\n";
-    html += "    <a href=\"cmd:player.heal();\" style=\"color:#89DDFF; text-decoration:underline; font-weight:700;\">void heal();</a>\n";
-    html += "};";
+    html += "    " + linkPlayer("player.attack(enemy);", "void attack(Creature& enemy);") + "\n";
+    html += "    " + linkPlayer("player.powerAttack(enemy);", "void powerAttack(Creature& enemy);") + "\n";
+    html += "    " + linkPlayer("player.heal();", "void heal();") + "\n";
+    for (const CodeMethod& method : methods()) {
+        if (method.command == "player.attack(enemy);" ||
+            method.command == "player.powerAttack(enemy);" ||
+            method.command == "player.heal();") {
+            continue;
+        }
+        html += "    " + linkPlayer(method.command, method.signature) + "\n";
+    }
+    html += "};\n\n";
+    html += "void Player::attack(Creature& enemy) {\n";
+    html += "    enemy.takeDamage(atk);\n";
+    html += "}\n\n";
+    html += "void Player::powerAttack(Creature& enemy) {\n";
+    html += "    enemy.takeDamage(atk * 2);\n";
+    html += "}\n\n";
+    html += "void Player::heal() {\n";
+    html += "    Creature::heal(4);\n";
+    html += "}\n";
     html += "</pre>";
+    html += extraCodeHtml();
     return html;
 }

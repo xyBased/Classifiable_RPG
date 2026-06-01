@@ -11,26 +11,23 @@
 
 class GameLevel : public QObject {
     Q_OBJECT
-
 public:
     static constexpr int TotalLevels = 10;
 
 private:
     QMap<QString, Creature*> m_creatures;
     QMap<QString, bool> m_flags;
-
     int m_usedSteps = 0;
     int m_maxSteps = 5;
     int m_currentLevel = 0;
-    bool m_allowEnemyControl = false; // 是否允许玩家在指令框里写 enemyX.xxx()
-    QString m_intro;                  // 关卡提示文案
+    bool m_allowEnemyControl = false;
+    QString m_intro;
 
 public:
     explicit GameLevel(QObject* parent = nullptr);
     ~GameLevel();
 
     void loadLevel(int n);
-
     void loadLevel1();
     void loadLevel2();
     void loadLevel3();
@@ -48,11 +45,12 @@ public:
     int usedSteps() const;
     int maxSteps() const;
     int remainingSteps() const;
-    void consumeStep();
-
     int currentLevel() const;
     bool allowEnemyControl() const;
     QString intro() const;
+    QString hintForCurrentLevel() const;
+
+    void consumeStep();
 
     void setFlag(const QString& key, bool value = true);
     bool flag(const QString& key) const;
@@ -67,4 +65,5 @@ signals:
 private:
     void resetCreatures();
     void registerCreature(const QString& id, Creature* c);
+    QString htmlBlock(const QString& title, const QString& code) const;
 };

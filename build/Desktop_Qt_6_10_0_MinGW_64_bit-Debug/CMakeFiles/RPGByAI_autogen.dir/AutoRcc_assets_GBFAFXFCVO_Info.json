@@ -1,0 +1,33 @@
+{
+	"BUILD_DIR" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/RPGByAI_autogen",
+	"CMAKE_BINARY_DIR" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "D:/RPG",
+	"CMAKE_SOURCE_DIR" : "D:/RPG",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/RPGByAI_autogen/include",
+	"INPUTS" : 
+	[
+		"D:/RPG/assets/sfx_hit.wav",
+		"D:/RPG/assets/sfx_heal.wav",
+		"D:/RPG/assets/sfx_victory.wav",
+		"D:/RPG/assets/enemy_bug.png",
+		"D:/RPG/assets/background_spire.png",
+		"D:/RPG/assets/player_hero.png",
+		"D:/RPG/assets/enemy_boss.png",
+		"D:/RPG/assets/enemy_goblin.png",
+		"D:/RPG/assets/sfx_attack.wav"
+	],
+	"LOCK_FILE" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/RPGByAI_autogen.dir/AutoRcc_assets_GBFAFXFCVO_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "assets" ],
+	"OUTPUT_CHECKSUM" : "GBFAFXFCVO",
+	"OUTPUT_NAME" : "qrc_assets.cpp",
+	"RCC_EXECUTABLE" : "D:/Qt/6.10.0/mingw_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "D:/RPG/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/CMakeFiles/RPGByAI_autogen.dir/AutoRcc_assets_GBFAFXFCVO_Used.txt",
+	"SOURCE" : "D:/RPG/assets/assets.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}
