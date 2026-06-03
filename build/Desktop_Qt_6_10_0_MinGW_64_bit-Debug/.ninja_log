@@ -1,0 +1,24 @@
+# ninja log v6
+5	1708	8022045675072213	RPGByAI_autogen/timestamp	baf438c20d798d8d
+5	1708	8022045675072213	RPGByAI_autogen/mocs_compilation.cpp	baf438c20d798d8d
+5	1708	8022045675072213	D:/Classifiable_RPG-version-6-6/Classifiable_RPG-version-6-6/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/RPGByAI_autogen/timestamp	baf438c20d798d8d
+5	1708	8022045675072213	D:/Classifiable_RPG-version-6-6/Classifiable_RPG-version-6-6/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/RPGByAI_autogen/mocs_compilation.cpp	baf438c20d798d8d
+1715	2247	8022045681059144	RPGByAI_autogen/GBFAFXFCVO/qrc_assets.cpp	c4f41620ac33023
+1715	2247	8022045681059144	D:/Classifiable_RPG-version-6-6/Classifiable_RPG-version-6-6/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/RPGByAI_autogen/GBFAFXFCVO/qrc_assets.cpp	c4f41620ac33023
+2280	5296	8022045681853858	CMakeFiles/RPGByAI.dir/Player.cpp.obj	49885f448ef87a42
+2294	5418	8022045681987497	CMakeFiles/RPGByAI.dir/Enemy.cpp.obj	cab61b846cc09764
+2269	5494	8022045681743843	CMakeFiles/RPGByAI.dir/Creature.cpp.obj	756bc4ac70d52115
+2302	5863	8022045682077538	CMakeFiles/RPGByAI.dir/GameLevel.cpp.obj	a87ca7ac1a796653
+2316	5925	8022045682207548	CMakeFiles/RPGByAI.dir/CommandParser.cpp.obj	6d27048ca15b24a9
+2409	6064	8022045683150900	CMakeFiles/RPGByAI.dir/SoundUtil.cpp.obj	8753ba1d1b8ae031
+2394	6195	8022045683001158	CMakeFiles/RPGByAI.dir/SpriteUtil.cpp.obj	df00206f32f11640
+2328	6629	8022045682339593	CMakeFiles/RPGByAI.dir/ActorItem.cpp.obj	647f0ab97c741cde
+2256	6930	8022045681608840	CMakeFiles/RPGByAI.dir/main.cpp.obj	c9a5f4bdef97bc79
+2356	7064	8022045682610905	CMakeFiles/RPGByAI.dir/InfoCodePanel.cpp.obj	b1a8da84085a0c29
+2385	7081	8022045682903814	CMakeFiles/RPGByAI.dir/GameController.cpp.obj	87683f665bb035dd
+2369	7091	8022045682750909	CMakeFiles/RPGByAI.dir/CommandPanel.cpp.obj	8d3621755618e525
+2247	7371	8022045681528899	CMakeFiles/RPGByAI.dir/RPGByAI_autogen/mocs_compilation.cpp.obj	d6264582282e712
+2263	7483	8022045681678834	CMakeFiles/RPGByAI.dir/MainWindow.cpp.obj	13d1b81125ecbe99
+2339	7595	8022045682459616	CMakeFiles/RPGByAI.dir/BattleSceneView.cpp.obj	a98b54942df5356f
+2422	19683	8022045683284498	CMakeFiles/RPGByAI.dir/RPGByAI_autogen/GBFAFXFCVO/qrc_assets.cpp.obj	a9152feb5a8dffa6
+19683	21363	8022045855887353	RPGByAI.exe	8cece4b5278a0e8

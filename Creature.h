@@ -2,34 +2,50 @@
 
 #include <QObject>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 struct CodeMethod {
-    QString signature; // 显示在右侧代码里的方法签名
-    QString command;   // 点击后自动输入的命令
+    QString signature;
+    QString command;
 };
 
 class Creature : public QObject {
     Q_OBJECT
+public:
+    enum EnemyIntent {
+        IntentNone,
+        IntentAttack,
+        IntentDefend,
+        IntentHeal,
+        IntentBuff,
+        IntentUnknown
+    };
+    Q_ENUM(EnemyIntent)
 
 protected:
     QString m_id;
     QString m_name;
     QString m_className;
-    int m_hp;
-    int m_maxHp;
-    int m_atk;
-    bool m_isEnemy;
-
-    // 新增：把“是否显示为右侧对象 / 是否算胜利目标 / 是否会自动攻击”拆开。
-    // 这样宝石、箱子、法术槽等也可以被点击查看代码，但不会被当成必须击杀的敌人。
-    bool m_countsForWin = true;
-    bool m_takesTurn = true;
-    QString m_campText;
-
+    int m_hp = 1;
+    int m_maxHp = 1;
+    int m_atk = 1;
+    bool m_isEnemy = false;
     QVector<CodeMethod> m_methods;
-    QString m_customClassCodeHtml;
-    QString m_extraPropertyText;
+    QString m_extraCodeHtml;
+    QString m_description;
+
+    EnemyIntent m_intent = IntentNone;
+    int m_intentValue = 0;
+    QString m_intentText;
+
+    // 源码展示控制
+    bool m_showAttackImpl = false;          // 是否在类外写出 attack 的函数实现（只在第一关写一次）
+    QString m_baseClass = QStringLiteral("Creature");  // 继承的基类
+    QString m_inheritAccess = QStringLiteral("public"); // 继承方式：public / private
+    QStringList m_classDeclarations;        // 仅声明、不可点击调用的成员函数（如 onHit、previewIntent）
+    QString m_classBodyNote;                // 写在类体内部的注释行
+    bool m_inheritDemo = false;             // 第四关：用"基类 + 派生类"的形式演示继承权限
 
 public:
     explicit Creature(
@@ -40,7 +56,7 @@ public:
         int atk,
         bool isEnemy,
         QObject* parent = nullptr
-        );
+    );
 
     virtual ~Creature() = default;
 
@@ -52,33 +68,48 @@ public:
     int atk() const;
     bool isEnemy() const;
     bool isAlive() const;
-
-    bool countsForWin() const;
-    bool takesTurn() const;
-    QString campText() const;
-    QString extraPropertyText() const;
-    bool hasCustomClassCodeHtml() const;
-
-    void takeDamage(int damage);
-    void heal(int value);
+    QString description() const;
+    void setDescription(const QString& description);
 
     void setHp(int value);
     void setMaxHp(int value);
+    void addAtk(int value);
     void setAtk(int value);
-    void addAtk(int delta);
-    void setCountsForWin(bool value);
-    void setTakesTurn(bool value);
-    void setCampText(const QString& text);
-    void setExtraPropertyText(const QString& text);
-    void setCustomClassCodeHtml(const QString& html);
 
-    virtual QString classCodeHtml() const;
-    virtual QString propertyText() const;
+    void attack(Creature& target);
+    void takeDamage(int damage);
+    void heal(int value);
+
     QVector<CodeMethod> methods() const;
-
     void addMethod(const CodeMethod& m);
     void clearMethods();
 
+    void setExtraCodeHtml(const QString& html);
+    QString extraCodeHtml() const;
+
+    void setIntent(EnemyIntent intent, int value = 0, const QString& text = QString());
+    EnemyIntent intent() const;
+    int intentValue() const;
+    QString intentText() const;
+    QString intentSymbol() const;
+
+    // 源码展示控制
+    void setShowAttackImpl(bool value);
+    bool showAttackImpl() const;
+    void setInheritInfo(const QString& baseClass, const QString& access);
+    QString baseClass() const;
+    QString inheritAccess() const;
+    void addClassDeclaration(const QString& declaration);
+    QStringList classDeclarations() const;
+    void clearClassDeclarations();
+    void setClassBodyNote(const QString& note);
+    QString classBodyNote() const;
+    void setInheritDemo(bool value);
+    bool inheritDemo() const;
+
+    static QString baseClassCodeHtml(int level = 0);
+    virtual QString classCodeHtml() const;
+    virtual QString propertyText() const;
 signals:
     void changed();
 };
