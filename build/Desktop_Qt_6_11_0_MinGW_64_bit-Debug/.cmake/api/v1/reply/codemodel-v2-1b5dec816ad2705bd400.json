@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-99d1f4e3bafe502bafaa.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Classifiable_RPG",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Classifiable_RPG::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Classifiable_RPG-Debug-1d41f5e69072f591a095.json",
+					"name" : "Classifiable_RPG",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Classifiable_RPG_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Classifiable_RPG_autogen-Debug-5946eb5324ee48b67b40.json",
+					"name" : "Classifiable_RPG_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Classifiable_RPG_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Classifiable_RPG_autogen_timestamp_deps-Debug-e6fb9cb07113b87dad73.json",
+					"name" : "Classifiable_RPG_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug",
+		"source" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

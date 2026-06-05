@@ -1,0 +1,4 @@
+Classifiable_RPG-12 修改说明
+1. 修正第三关 Bomb 头顶排列重叠问题。
+2. 增大 Bomb 之间的水平间距，避免 countdown 意图和图标彼此挤在一起。
+3. 额外将第一个 Bomb 向左偏移，使其不再与后续 Bomb 重叠。

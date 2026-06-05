@@ -1,0 +1,5 @@
+Classifiable_RPG-5 修改说明
+1. 第二关重新显示 darkknight.attack(goblin); 作为可点击指令，方便玩家点击/输入后尝试。
+2. 保留运行时错误判定：darkknight.attack(...) 不是 public，执行会失败。
+3. darkknight.attack(...) 执行失败时不增长步数，也不触发怪物行动。
+4. 保留 -4 中的位置、贴图、切关清空指令框，以及前序版本的第二关数值/名称/介绍等修改。

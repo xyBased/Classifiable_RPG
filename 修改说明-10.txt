@@ -1,0 +1,6 @@
+Classifiable_RPG-10 修改说明
+1. 第三关开始时就显示 Bomb 类代码按钮，不再需要先召唤 Bomb 才能查看 Bomb 类。
+2. player 信息栏不再显示 Bomb 类代码，只保留 Player::summonBomb()、Player::defend() 与 takeDamage() 相关机制说明。
+3. Bomb 类代码补全：包含构造函数、countdown()、析构函数、owner 与 ttl 成员，并使用 HTML 安全转义，避免 <= 等符号导致代码显示被截断。
+4. Bomb 对象自身代码也补全并转义，点击已召唤的 bomb 可查看完整实现。
+5. Bomb 被 attack 打死后也会触发析构效果：对所有敌方造成 10 点伤害，并使 player DEF -2。

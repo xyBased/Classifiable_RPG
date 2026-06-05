@@ -1,0 +1,8 @@
+Classifiable_RPG-8 修改说明
+1. 第三关重做：玩家有 summonBomb()、attack()、defend() 三种行动。
+2. Player 数值：HP 15 / ATK 3 / DEF 3。信息面板新增 DEF 显示，并在 HP 条右侧增加盾牌数值显示。
+3. defend() 会生成等于当前 DEF 的护盾；takeDamage() 会优先由护盾抵消伤害；护盾会在下一个玩家回合开始前消失。
+4. Bomb 改为独立全局对象：可点击、可查看代码、拥有独立贴图；召唤时 player DEF +2；3 个玩家行动回合后自动析构，对所有敌方造成 10 点伤害，并令 player DEF -2。
+5. Bomb 按 bomb1~bomb4 编号，在 player 头顶从左到右排列。
+6. 第三关敌人改为 darkknight / Elite：HP 20 / ATK 3，第一回合强化（ATK +5），之后持续攻击；介绍、贴图、非 public 方法展示已更新。
+7. GameLevel 新增动态 add/remove creature 与 counter 支持；GameController 新增第三关护盾和 Bomb 生命周期结算逻辑。

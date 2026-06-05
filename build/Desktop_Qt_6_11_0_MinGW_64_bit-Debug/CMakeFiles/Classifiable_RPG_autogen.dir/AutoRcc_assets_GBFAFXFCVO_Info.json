@@ -1,0 +1,36 @@
+{
+	"BUILD_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Classifiable_RPG_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17",
+	"CMAKE_SOURCE_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "MinGW Makefiles",
+	"INCLUDE_DIR" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/Classifiable_RPG_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/intent_ref_defend_badge.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/player_bomb.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/sfx_hit.wav",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/sfx_heal.wav",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/sfx_victory.wav",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/enemy_bug.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/background_spire.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/player_hero.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/enemy_boss.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/enemy_goblin.png",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/sfx_attack.wav",
+		"C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/intent_ref_attack_badge.png"
+	],
+	"LOCK_FILE" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/Classifiable_RPG_autogen.dir/AutoRcc_assets_GBFAFXFCVO_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "assets" ],
+	"OUTPUT_CHECKSUM" : "GBFAFXFCVO",
+	"OUTPUT_NAME" : "qrc_assets.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt/6.11.0/mingw_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/Classifiable_RPG_autogen.dir/AutoRcc_assets_GBFAFXFCVO_Used.txt",
+	"SOURCE" : "C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/assets/assets.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

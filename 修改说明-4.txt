@@ -1,0 +1,7 @@
+Classifiable_RPG-4 修改说明
+1. 修正第二关视觉表现：保留 goblin/darkknight 对象名，同时让 goblin 排在左侧、darkknight 排在右侧，避免因对象名排序导致位置被调换。
+2. 修正 darkknight/Elite 贴图映射，让它继续使用原本第二个怪物的大型敌人贴图，不再变成普通小怪贴图。
+3. 第二关 darkknight/Elite 的 attack 改为非 public：源码显示为 protected，右侧不再提供 darkknight.attack(...) 可点击指令。
+4. 增加运行时保护：即使手动输入 darkknight.attack(...) 也会失败，不增长步数，也不触发怪物行动。
+5. 所有关卡切换/重开时清空左下角指令输入框，避免上一关指令残留。
+6. 保留 -3 的全关卡指令结算规则：成功才增长步数并触发怪物行动；失败不增长步数、不触发怪物行动。

@@ -1,0 +1,8 @@
+Classifiable_RPG-2 修改说明
+0. 压缩包内项目文件夹改为 Classifiable_RPG-2；CMake 项目名/目标名改为 Classifiable_RPG。
+1. 关卡选择页改为全部关卡解锁。
+2. 第二关 player 改为 HP 15 / ATK 3。
+3. 第二关怪物改为 goblin：HP 3 / ATK 5 / 类名 Goblin；darkknight：HP 10 / ATK 4 / 类名 Elite。
+4. 第二关怪物介绍已按要求更新。
+5. 第二关怪物可调用指令更新为 goblin.attack(darkknight); 与 darkknight.attack(goblin);。
+6. 第二关改为每次输入非空指令后，所有存活怪物都会行动，不再跳过刚被控制过的怪物，也不要求指令成功。

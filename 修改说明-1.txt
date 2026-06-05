@@ -1,0 +1,4 @@
+Classifiable_RPG-6.3-1 修改说明
+1. 修复大小写不一致导致的潜在编译失败：BattleSceneview.h -> BattleSceneView.h。
+2. 删除重复文件 BattleSceneview.cpp，保留 CMakeLists.txt 中实际使用的 BattleSceneView.cpp。
+3. 未改动游戏玩法、关卡数值和 UI 文案；等待后续具体修改需求。

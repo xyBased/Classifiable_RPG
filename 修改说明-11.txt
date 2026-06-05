@@ -1,0 +1,6 @@
+Classifiable_RPG-11 修改说明
+1. 第三关 Bomb 改为 Player 的成员类/嵌套类展示模型：Player::Bomb。
+2. 第三关类代码按钮从 Bomb 改为 Player::Bomb，开局即可查看完整嵌套类代码。
+3. Player 面板中新增 class Bomb; 成员类声明，summonBomb() 的源码改为 new Player::Bomb(*this)。
+4. 已召唤的 bomb 对象类名改为 Player::Bomb，点击 bomb 时显示 Player::Bomb::Bomb、Player::Bomb::countdown、Player::Bomb::~Bomb 实现。
+5. 保留 -10 的析构逻辑：Bomb 倒计时归零或被攻击打死都会触发析构效果。

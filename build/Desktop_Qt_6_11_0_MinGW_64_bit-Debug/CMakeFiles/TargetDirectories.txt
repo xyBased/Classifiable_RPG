@@ -1,0 +1,9 @@
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/Classifiable_RPG.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install/local.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/install/strip.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/Classifiable_RPG_autogen_timestamp_deps.dir
+C:/Users/35531/Desktop/QT Projects/Classifiable_RPG-17/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/Classifiable_RPG_autogen.dir

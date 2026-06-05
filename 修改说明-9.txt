@@ -1,0 +1,8 @@
+Classifiable_RPG-9 修改说明
+1. 修复第三关 Bomb 贴图遮挡 player 的问题：Bomb 贴图缩小并上移到 player 头顶上方，按编号从左到右排列。
+2. 补全第三关源码展示：明确写出 Bomb* Player::summonBomb()。
+3. Bomb 源码与对象代码中新增 void countdown()，逻辑为倒计时减 1，倒计时为 0 时触发析构。
+4. 信息面板中 DEF 只在选中 player 时显示；其他对象不再显示防御力。
+5. 所有关卡中，非 player 对象会在意图图标上方显示意图函数名，例如 attack、empower、countdown。
+6. 强化意图现在只显示强化图标和函数名 empower，不再显示强化数值。
+7. Bomb 的 countdown 意图会显示当前倒计时数值。
