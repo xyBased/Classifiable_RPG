@@ -1,6 +1,8 @@
 #include "GameController.h"
 
-#include <QTimer>
+#include "SoundUtil.h"
+
+#include <QStringList>
 
 GameController::GameController(QObject* parent)
     : QObject(parent) {}
@@ -10,18 +12,53 @@ void GameController::setup(
     BattleSceneView* sceneView,
     InfoCodePanel* infoPanel,
     CommandPanel* commandPanel
-    ) {
+) {
     m_level = level;
     m_sceneView = sceneView;
     m_infoPanel = infoPanel;
     m_commandPanel = commandPanel;
 
     m_parser = new CommandParser(m_level, this);
-
     m_sceneView->setLevel(m_level);
 
     connect(m_sceneView, &BattleSceneView::actorSelected, this, &GameController::onActorSelected);
+    connect(m_sceneView, &BattleSceneView::actorHovered, this, [this](const QString& actorId) {
+        if (m_commandPanel && m_commandPanel->isParameterSelectionActive()) {
+            Creature* creature = m_level ? m_level->creature(actorId) : nullptr;
+            if (creature && creature->isAlive()) {
+                m_commandPanel->previewParameter(actorId);
+            } else {
+                m_commandPanel->clearParameterPreview();
+            }
+        }
+    });
+    connect(m_sceneView, &BattleSceneView::actorHoverLeft, this, [this](const QString&) {
+        if (m_commandPanel && m_commandPanel->isParameterSelectionActive()) {
+            m_commandPanel->clearParameterPreview();
+        }
+    });
+    connect(m_sceneView, &BattleSceneView::actorParameterPicked, this, [this](const QString& actorId) {
+        Creature* creature = m_level ? m_level->creature(actorId) : nullptr;
+        if (!creature || !creature->isAlive()) return;
+        if (m_commandPanel) m_commandPanel->commitParameter(actorId);
+        if (m_sceneView) m_sceneView->setParameterPickMode(false);
+    });
+    connect(m_sceneView, &BattleSceneView::actorParameterPickRejected, this, [this](const QString& actorId) {
+        if (m_level && m_level->currentLevel() == 2 && m_commandPanel) {
+            m_commandPanel->cancelParameterSelection();
+            m_commandPanel->appendLog(QString("%1 已死亡，不能选为目标。").arg(actorId));
+        }
+        if (m_sceneView) m_sceneView->setParameterPickMode(false);
+    });
+    connect(m_sceneView, &BattleSceneView::actorParameterPickCanceled, this, [this]() {
+        if (m_commandPanel) m_commandPanel->cancelParameterSelection();
+        if (m_sceneView) m_sceneView->setParameterPickMode(false);
+    });
+    connect(m_commandPanel, &CommandPanel::parameterSelectionChanged, this, [this](bool active, const QPoint&) {
+        if (m_sceneView) m_sceneView->setParameterPickMode(active);
+    });
     connect(m_infoPanel, &InfoCodePanel::commandChosen, this, &GameController::onCommandChosen);
+    connect(m_infoPanel, &InfoCodePanel::classSelected, this, &GameController::onClassSelected);
     connect(m_commandPanel, &CommandPanel::commandSubmitted, this, &GameController::onCommandSubmitted);
     connect(m_level, &GameLevel::levelChanged, this, &GameController::refreshSelectedInfo);
 }
@@ -33,68 +70,81 @@ void GameController::startLevel(int n) {
     if (n > GameLevel::TotalLevels) n = GameLevel::TotalLevels;
 
     m_currentLevel = n;
-    m_transitioning = false;
-
-    m_level->loadLevel(n);
     m_selectedActorId = "player";
-    m_infoPanel->showCreature(m_level->creature("player"));
+    m_selectedClassName.clear();
+    m_level->loadLevel(n);
+    m_infoPanel->setClassChoices(m_level->creatures(), n);
     m_sceneView->setSelectedActor("player");
+    m_infoPanel->showCreature(m_level->creature("player"));
+    m_commandPanel->setCommand(QString());
+    m_commandPanel->clearLog();
+    m_commandPanel->appendLog(QString("第 %1 关开始：%2").arg(n).arg(m_level->levelName()));
+    m_commandPanel->appendLog("阅读右侧源码，输入或点击可调用的 public 函数。");
 
-    m_commandPanel->appendLog(QString("════ 关卡 %1 / %2 开始 ════")
-                                  .arg(n)
-                                  .arg(GameLevel::TotalLevels));
-    const QString intro = m_level->intro();
-    for (const QString& line : intro.split('\n', Qt::SkipEmptyParts)) {
-        m_commandPanel->appendLog(line);
-    }
-    m_commandPanel->appendLog("提示：点击右侧类代码里的蓝色代码可以自动输入指令。");
 }
 
-void GameController::goToNextLevel() {
-    const int next = m_currentLevel + 1;
-    if (next > GameLevel::TotalLevels) {
-        m_transitioning = false;
-        m_commandPanel->appendLog(QString("★ 恭喜你通关了所有 %1 关！★").arg(GameLevel::TotalLevels));
-        m_commandPanel->appendLog("你已经把 C++ 的类规则变成了通关武器。");
-        return;
-    }
-    startLevel(next);
-}
-
-void GameController::retryLevel() {
+void GameController::restartCurrentLevel() {
     startLevel(m_currentLevel);
 }
 
+void GameController::showHint() {
+    if (!m_level || !m_commandPanel) return;
+    const QString hint = m_level->hintForCurrentLevel();
+    // 在左下角的日志区域给出当前关卡的提示
+    m_commandPanel->appendLog(QStringLiteral("💡 提示：") + hint);
+}
+
+void GameController::exitRun() {
+    emit askCloseApplication();
+}
+
+int GameController::currentLevel() const {
+    return m_currentLevel;
+}
+
 void GameController::onActorSelected(const QString& actorId) {
+    m_selectedClassName.clear();
     m_selectedActorId = actorId;
     Creature* creature = m_level ? m_level->creature(actorId) : nullptr;
     m_infoPanel->showCreature(creature);
 }
 
+void GameController::onClassSelected(const QString& className) {
+    m_selectedActorId.clear();
+    m_selectedClassName = className;
+    if (m_sceneView) m_sceneView->setClassHighlight(className);
+}
+
 void GameController::onCommandChosen(const QString& command) {
-    if (m_commandPanel) {
-        m_commandPanel->setCommand(command);
-    }
+    if (m_commandPanel) m_commandPanel->setCommand(command);
 }
 
 void GameController::onCommandSubmitted(const QString& command) {
     if (!m_level || !m_parser || !m_commandPanel) return;
-
-    if (m_transitioning) {
-        m_commandPanel->appendLog("（关卡正在切换，请稍候…）");
-        return;
-    }
+    processLevel3TurnStart();
+    m_commandPanel->cancelParameterSelection();
+    if (m_sceneView) m_sceneView->setParameterPickMode(false);
 
     CommandResult result = m_parser->execute(command);
+
     m_commandPanel->appendLog(QStringLiteral("> ") + command);
     m_commandPanel->appendLog(result.message);
 
-    if (result.success && result.consumeStep) {
+    if (result.success) {
+        if (result.effect == "attack") {
+            SoundUtil::playAttack();
+        } else if (result.effect == "heal") {
+            SoundUtil::playHeal();
+        } else if (result.effect == "buff" || result.effect == "open") {
+            SoundUtil::playHit();
+        }
+    }
+
+    if (result.success) {
         m_level->consumeStep();
+        processLevel3Bombs();
+
         if (!m_level->isWin() && !m_level->isLose()) {
-<<<<<<< Updated upstream
-            enemyTurn(result.sourceId);
-=======
             // 全关卡统一规则：
             // 指令成功运行后，步数增长，并触发所有存活怪物行动；
             // 指令失败时不增长步数，也不触发怪物行动。
@@ -105,36 +155,34 @@ void GameController::onCommandSubmitted(const QString& command) {
         if (m_level->currentLevel() == 3) {
             Creature* player = m_level->creature("player");
             m_level->setFlag("level3_shield_decay_pending", player && player->shield() > 0);
->>>>>>> Stashed changes
         }
     }
 
     if (m_level->isWin()) {
-        m_transitioning = true;
-        m_commandPanel->appendLog("胜利！你破解了本关的类规则。");
-        playIntermission(m_currentLevel, m_currentLevel + 1);
-        QTimer::singleShot(2000, this, [this]() {
-            goToNextLevel();
-        });
-    } else if (m_level->isLose()) {
-        m_transitioning = true;
-        m_commandPanel->appendLog("失败！步数用完或玩家阵亡。");
-        m_commandPanel->appendLog("（3 秒后从本关重新开始）");
-        QTimer::singleShot(3000, this, [this]() {
-            retryLevel();
-        });
+        const int next = m_currentLevel + 1;
+        emit levelCleared(m_currentLevel, next, next <= GameLevel::TotalLevels);
+        return;
+    }
+
+    if (m_level->isLose()) {
+        m_commandPanel->appendLog("挑战失败。");
+        emit runFailed(QString());
     }
 }
 
 void GameController::refreshSelectedInfo() {
     if (!m_level || !m_infoPanel) return;
-    if (m_selectedActorId.isEmpty()) return;
+    m_infoPanel->setClassChoices(m_level->creatures(), m_level->currentLevel());
+    if (!m_selectedClassName.isEmpty()) {
+        m_infoPanel->showClassCode(m_selectedClassName);
+        if (m_sceneView) m_sceneView->setClassHighlight(m_selectedClassName);
+        return;
+    }
     Creature* creature = m_level->creature(m_selectedActorId);
+    if (!creature) creature = m_level->creature("player");
     m_infoPanel->showCreature(creature);
 }
 
-<<<<<<< Updated upstream
-=======
 void GameController::processLevel3TurnStart() {
     if (!m_level || !m_commandPanel) return;
     if (m_level->currentLevel() != 3) return;
@@ -219,7 +267,6 @@ void GameController::processLevel10Enemy() {
     }
 }
 
->>>>>>> Stashed changes
 void GameController::enemyTurn(const QString& actedId) {
     if (!m_level || !m_commandPanel) return;
 
@@ -227,35 +274,49 @@ void GameController::enemyTurn(const QString& actedId) {
     if (!player || !player->isAlive()) return;
 
     for (Creature* c : m_level->creatures()) {
-        if (!c) continue;
-        if (!c->isEnemy()) continue;
-        if (!c->isAlive()) continue;
-        if (!c->takesTurn()) continue;
+        if (!c || !c->isEnemy() || !c->isAlive()) continue;
         if (c->id() == actedId) continue;
+
+        switch (c->intent()) {
+        case Creature::IntentAttack: {
+            const int damage = c->intentValue() > 0 ? c->intentValue() : c->atk();
+            if (damage > 0) {
+                const int hpBefore = player->hp();
+                const int shieldBefore = player->shield();
+                player->takeDamage(damage);
+                const int actualLost = hpBefore - player->hp();
+                const int absorbed = shieldBefore - player->shield();
+                SoundUtil::playHit();
+                if (absorbed > 0) {
+                    m_commandPanel->appendLog(QString("%1 发动攻击，原始伤害 %2，护盾抵消 %3，实际受到 %4。").arg(c->id()).arg(damage).arg(absorbed).arg(actualLost));
+                } else {
+                    m_commandPanel->appendLog(QString("%1 发动攻击，造成 %2 点伤害。").arg(c->id()).arg(damage));
+                }
+            }
+            break;
+        }
+        case Creature::IntentHeal: {
+            const int value = c->intentValue() > 0 ? c->intentValue() : 2;
+            c->heal(value);
+            SoundUtil::playHeal();
+            m_commandPanel->appendLog(QString("%1 回复 %2 点生命。").arg(c->id()).arg(value));
+            break;
+        }
+        case Creature::IntentBuff: {
+            const int value = c->intentValue() > 0 ? c->intentValue() : 1;
+            c->addAtk(value);
+            c->setIntent(Creature::IntentAttack, c->atk());
+            c->setIntentFunctionName(QStringLiteral("attack"));
+            m_commandPanel->appendLog(QString("%1 强化 ATK +%2。").arg(c->id()).arg(value));
+            break;
+        }
+        case Creature::IntentDefend:
+            m_commandPanel->appendLog(QString("%1 本回合防御。").arg(c->id()));
+            break;
+        default:
+            break;
+        }
+
         if (!player->isAlive()) break;
-
-        const int damage = c->atk();
-        if (damage <= 0) continue;
-
-        player->takeDamage(damage);
-        m_commandPanel->appendLog(
-            QString("%1.attack(player); 造成 %2 点伤害。")
-                .arg(c->id())
-                .arg(damage)
-            );
     }
-}
-
-void GameController::playIntermission(int fromLevel, int toLevel) {
-    if (!m_commandPanel) return;
-    if (toLevel > GameLevel::TotalLevels) {
-        return;
-    }
-
-    m_commandPanel->appendLog("─────────────────");
-    m_commandPanel->appendLog(QString("⌛ 关卡 %1 完成 → 即将进入关卡 %2")
-                                  .arg(fromLevel)
-                                  .arg(toLevel));
-    m_commandPanel->appendLog("（玩家生命值即将回满，步数清零）");
-    m_commandPanel->appendLog("─────────────────");
 }

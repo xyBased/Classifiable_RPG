@@ -1,9 +1,5 @@
 <RCC>
     <qresource prefix="/assets">
-<<<<<<< Updated upstream
-        <file>enemy_bug.png</file>
-        <file>player_creature.png</file>
-=======
         <file alias="background_spire.png">background_spire.png</file>
         <file alias="player_hero.png">player_hero.png</file>
         <file alias="player_bomb.png">player_bomb.png</file>
@@ -28,6 +24,5 @@
         <file alias="sfx_hit.wav">sfx_hit.wav</file>
         <file alias="sfx_heal.wav">sfx_heal.wav</file>
         <file alias="sfx_victory.wav">sfx_victory.wav</file>
->>>>>>> Stashed changes
     </qresource>
 </RCC>
