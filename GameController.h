@@ -21,7 +21,13 @@ private:
     bool    m_transitioning = false;  // 过场期间禁止再触发胜负判定
 
     void enemyTurn(const QString& actedId);
+<<<<<<< Updated upstream
     void playIntermission(int fromLevel, int toLevel);
+=======
+    void processLevel3TurnStart();
+    void processLevel3Bombs();
+    void processLevel10Enemy();
+>>>>>>> Stashed changes
 
 public:
     explicit GameController(QObject* parent = nullptr);

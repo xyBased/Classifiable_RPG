@@ -122,15 +122,67 @@ QString Creature::propertyText() const {
                        .arg(m_atk)
                        .arg(m_campText);
 
+<<<<<<< Updated upstream
     if (!m_extraPropertyText.isEmpty()) {
         text += QStringLiteral("\n") + m_extraPropertyText;
+=======
+QString Creature::baseClassCodeHtml(int level) {
+    const bool attackPublic = false;          // 旧的「继承权限」演示已移除
+    // 基类给出 virtual onHit 作为分发入口，供这些关卡的子类重写
+    const bool showOnHit = (level == 4 || level == 6 || level == 9);
+    QString html;
+    html += "<pre>";
+    html += line("class Creature {");
+    if (attackPublic) {
+        html += line("public:");
+        html += line("    void attack(Creature& target);");
+        html += line("protected:");
+        html += line("    int hp;");
+        html += line("    int atk;");
+        html += line("    void takeDamage(int damage);");
+    } else {
+        if (showOnHit) {
+            html += line("public:");
+            html += line("    virtual void onHit(Creature& attacker, int damage);");
+        }
+        html += line("protected:");
+        html += line("    int hp;");
+        html += line("    int atk;");
+        html += line("    void attack(Creature& target);");
+        html += line("    void takeDamage(int damage);");
+>>>>>>> Stashed changes
     }
     return text;
 }
 
 QString Creature::classCodeHtml() const {
+<<<<<<< Updated upstream
     if (!m_customClassCodeHtml.isEmpty()) {
         return m_customClassCodeHtml;
+=======
+    if (m_className == QStringLiteral("Creature") && m_id == QStringLiteral("king")) {
+        return Creature::baseClassCodeHtml(4) + m_extraCodeHtml;
+    }
+
+    QString html;
+    html += "<pre>";
+    html += line(QString("class %1 : %2 %3 {").arg(m_className, m_inheritAccess, m_baseClass));
+
+    const bool hasDeclaredMembers = !m_methods.isEmpty() || !m_classDeclarations.isEmpty();
+    if (hasDeclaredMembers || !m_classBodyNote.isEmpty()) {
+        if (hasDeclaredMembers) {
+            html += line(m_methodAccess + ":");
+        }
+        if (!m_classBodyNote.isEmpty()) {
+            html += "    " + esc(m_classBodyNote) + "\n";
+        }
+        for (const CodeMethod& method : m_methods) {
+            html += "    " + linkCmd(commandWithPlaceholders(method), method.signature) + "\n";
+        }
+        for (const QString& decl : m_classDeclarations) {
+            html += "    " + esc(decl) + "\n";
+        }
+>>>>>>> Stashed changes
     }
 
     QString html;

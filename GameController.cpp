@@ -92,7 +92,20 @@ void GameController::onCommandSubmitted(const QString& command) {
     if (result.success && result.consumeStep) {
         m_level->consumeStep();
         if (!m_level->isWin() && !m_level->isLose()) {
+<<<<<<< Updated upstream
             enemyTurn(result.sourceId);
+=======
+            // 全关卡统一规则：
+            // 指令成功运行后，步数增长，并触发所有存活怪物行动；
+            // 指令失败时不增长步数，也不触发怪物行动。
+            enemyTurn(QString());
+            processLevel10Enemy();
+        }
+
+        if (m_level->currentLevel() == 3) {
+            Creature* player = m_level->creature("player");
+            m_level->setFlag("level3_shield_decay_pending", player && player->shield() > 0);
+>>>>>>> Stashed changes
         }
     }
 
@@ -120,6 +133,93 @@ void GameController::refreshSelectedInfo() {
     m_infoPanel->showCreature(creature);
 }
 
+<<<<<<< Updated upstream
+=======
+void GameController::processLevel3TurnStart() {
+    if (!m_level || !m_commandPanel) return;
+    if (m_level->currentLevel() != 3) return;
+    if (!m_level->flag("level3_shield_decay_pending")) return;
+    Creature* player = m_level->creature("player");
+    if (player && player->shield() > 0) {
+        player->clearShield();
+        m_commandPanel->appendLog("player 的护盾在新回合开始时消散。");
+    }
+    m_level->setFlag("level3_shield_decay_pending", false);
+}
+
+void GameController::processLevel3Bombs() {
+    if (!m_level || !m_commandPanel) return;
+    if (m_level->currentLevel() != 3) return;
+
+    QStringList bombsToExplode;
+    for (int i = 1; i <= 4; ++i) {
+        const QString bombId = QString("bomb%1").arg(i);
+        Creature* bomb = m_level->creature(bombId);
+        if (!bomb) continue;
+        if (!bomb->isAlive()) {
+            bombsToExplode << bombId;
+            continue;
+        }
+        const QString key = QString("level3_bomb_ttl_%1").arg(bombId);
+        const int ttl = m_level->counter(key, 0) - 1;
+        if (ttl <= 0) {
+            bombsToExplode << bombId;
+        } else {
+            bomb->setIntent(Creature::IntentUnknown, ttl, QStringLiteral("倒计时"));
+            bomb->setIntentFunctionName(QStringLiteral("countdown"));
+            m_level->setCounter(key, ttl);
+        }
+    }
+
+    Creature* player = m_level->creature("player");
+    for (const QString& bombId : bombsToExplode) {
+        Creature* bomb = m_level->creature(bombId);
+        if (!bomb) continue;
+        for (Creature* c : m_level->creatures()) {
+            if (!c || !c->isEnemy() || !c->isAlive()) continue;
+            c->takeDamage(10);
+        }
+        if (player) player->addDef(-2);
+        m_level->removeCounter(QString("level3_bomb_ttl_%1").arg(bombId));
+        m_level->removeCreature(bombId);
+        SoundUtil::playHit();
+        m_commandPanel->appendLog(QString("%1 析构触发，对所有敌方造成 10 点伤害，player DEF -2。").arg(bombId));
+    }
+}
+
+void GameController::processLevel10Enemy() {
+    if (!m_level || !m_commandPanel) return;
+    if (m_level->currentLevel() != 10) return;
+
+    Creature* paladin = m_level->creature("paladin");
+    Creature* player = m_level->creature("player");
+    if (!paladin || !paladin->isAlive() || !player || !player->isAlive()) return;
+
+    const int warrior = m_level->counter("level10_warrior", 6);
+    const int healer = m_level->counter("level10_healer", 6);
+
+    // Warrior 半身：只要其 Unit::hp 仍在就攻击 player。
+    if (warrior > 0) {
+        player->takeDamage(2);
+        SoundUtil::playHit();
+        m_commandPanel->appendLog("Paladin 的 Warrior 半身发动攻击，造成 2 点伤害。");
+    }
+
+    // Healer 半身：只要其 Unit::hp 仍在，就治疗 Warrior 子对象（最多回到 6）。
+    if (healer > 0 && paladin->isAlive()) {
+        int healed = warrior + 2;
+        if (healed > 6) healed = 6;
+        if (healed != warrior) {
+            m_level->setCounter("level10_warrior", healed);
+            const int total = m_level->counter("level10_healer", 6) + healed;
+            paladin->setHp(total);
+            SoundUtil::playHeal();
+            m_commandPanel->appendLog(QString("Paladin 的 Healer 半身治疗 Warrior 子对象 +2（Warrior::hp = %1）。").arg(healed));
+        }
+    }
+}
+
+>>>>>>> Stashed changes
 void GameController::enemyTurn(const QString& actedId) {
     if (!m_level || !m_commandPanel) return;
 
