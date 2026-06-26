@@ -1,6 +1,31 @@
 <RCC>
     <qresource prefix="/assets">
-        <file>enemy_bug.png</file>
-        <file>player_creature.png</file>
+        <file alias="background_spire.png">background_spire.png</file>
+        <file alias="player_hero.png">player_hero.png</file>
+        <file alias="player_bomb.png">player_bomb.png</file>
+        <file alias="enemy_bug.png">enemy_bug.png</file>
+        <file alias="enemy_dummy.png">enemy_dummy.png</file>
+        <file alias="enemy_goblin.png">enemy_goblin.png</file>
+        <file alias="enemy_boss.png">enemy_boss.png</file>
+        <file alias="enemy_berserker.png">enemy_berserker.png</file>
+        <file alias="enemy_king.png">enemy_king.png</file>
+        <file alias="enemy_vault.png">enemy_vault.png</file>
+        <file alias="enemy_saboteur.png">enemy_saboteur.png</file>
+        <file alias="enemy_rogue.png">enemy_rogue.png</file>
+        <file alias="enemy_lich.png">enemy_lich.png</file>
+        <file alias="enemy_cultist.png">enemy_cultist.png</file>
+        <file alias="enemy_paladin.png">enemy_paladin.png</file>
+        <file alias="enemy_stone.png">enemy_stone.png</file>
+        <file alias="prop_throne.png">prop_throne.png</file>
+        <file alias="prop_gem.png">prop_gem.png</file>
+        <file alias="intent_ref_attack_badge.png">intent_ref_attack_badge.png</file>
+        <file alias="intent_ref_defend_badge.png">intent_ref_defend_badge.png</file>
+        <file alias="sfx_attack.wav">sfx_attack.wav</file>
+        <file alias="sfx_hit.wav">sfx_hit.wav</file>
+        <file alias="sfx_heal.wav">sfx_heal.wav</file>
+        <file alias="sfx_victory.wav">sfx_victory.wav</file>
+        <file alias="enemy_boss_l6.png">enemy_boss_l6.png</file>
+        <file alias="player_bomb_l6.png">player_bomb_l6.png</file>
+        <file alias="new_art_preview_sheet.png">new_art_preview_sheet.png</file>
     </qresource>
 </RCC>
